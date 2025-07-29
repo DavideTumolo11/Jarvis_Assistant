@@ -1,0 +1,55 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+jarvis_env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Jarvis Specific
+data/jarvis_memory.db      # Database locale
+data/logs/*.log            # Log files
+data/whisper_models/       # Whisper cache
+data/piper_models/         # Piper voice models
+config/user_preferences.json  # User settings
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# API Keys (se mai aggiunti)
+.env
+secrets.json

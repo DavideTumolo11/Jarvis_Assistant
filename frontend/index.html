@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>J.A.R.V.I.S AI Assistant</title>
+
+    <!-- FONT FUTURISTICI -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS PRINCIPALE -->
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- PRELOAD ASSETS PER PERFORMANCE -->
+    <link rel="preload" href="assets/icon.png" as="image">
+</head>
+
+<body>
+    <!-- BACKGROUND CONTAINER -->
+    <div class="background-container">
+        <!-- PARTICELLE DINAMICHE -->
+        <canvas id="particles-canvas"></canvas>
+
+        <!-- EFFETTI LUMINOSI -->
+        <div class="glow-effects">
+            <div class="ambient-glow"></div>
+            <div class="pulse-glow"></div>
+        </div>
+    </div>
+
+    <!-- INTERFACCIA PRINCIPALE JARVIS -->
+    <div class="jarvis-container">
+
+        <!-- SISTEMA ANELLI IRON MAN IDENTICO ALL'IMMAGINE -->
+        <div class="rings-system">
+            <!-- ANELLO ESTERNO - Archi spezzati -->
+            <div class="ring ring-outer">
+                <div class="outer-broken-arcs">
+                    <!-- Archi spezzati come nell'immagine -->
+                    <div class="broken-arc arc-top"></div>
+                    <div class="broken-arc arc-top-right"></div>
+                    <div class="broken-arc arc-right"></div>
+                    <div class="broken-arc arc-bottom-right"></div>
+                    <div class="broken-arc arc-bottom"></div>
+                    <div class="broken-arc arc-bottom-left"></div>
+                    <div class="broken-arc arc-left"></div>
+                    <div class="broken-arc arc-top-left"></div>
+                </div>
+
+                <div class="loading-segments-outer">
+                    <div class="loading-segment-outer" style="--segment-angle: 0deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 10deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 20deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 30deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 40deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 50deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 60deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 70deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 80deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 90deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 100deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 110deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 120deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 130deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 140deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 150deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 160deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 170deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 180deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 190deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 200deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 210deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 220deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 230deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 240deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 250deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 260deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 270deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 280deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 290deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 300deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 310deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 320deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 330deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 340deg"></div>
+                    <div class="loading-segment-outer" style="--segment-angle: 350deg"></div>
+                </div>
+
+            </div>
+
+            <!-- ANELLO MEDIO-ESTERNO - Pattern binario -->
+            <div class="ring ring-middle-outer">
+                <div class="binary-pattern">
+                    <!-- Pattern 01010101 come nell'immagine -->
+                    <div class="binary-segment" data-bit="0" style="--pos: 0"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 1"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 2"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 3"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 4"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 5"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 6"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 7"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 8"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 9"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 10"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 11"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 12"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 13"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 14"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 15"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 16"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 17"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 18"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 19"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 20"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 21"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 22"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 23"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 24"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 25"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 26"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 27"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 28"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 29"></div>
+                    <div class="binary-segment" data-bit="0" style="--pos: 30"></div>
+                    <div class="binary-segment" data-bit="1" style="--pos: 31"></div>
+                </div>
+            </div>
+
+            <!-- ANELLO MEDIO - Tacche piccole -->
+            <div class="ring ring-middle">
+                <div class="tick-marks">
+                    <!-- Tacche come nell'immagine -->
+                    <div class="tick" style="--tick: 0"></div>
+                    <div class="tick" style="--tick: 1"></div>
+                    <div class="tick" style="--tick: 2"></div>
+                    <div class="tick" style="--tick: 3"></div>
+                    <div class="tick" style="--tick: 4"></div>
+                    <div class="tick" style="--tick: 5"></div>
+                    <div class="tick" style="--tick: 6"></div>
+                    <div class="tick" style="--tick: 7"></div>
+                    <div class="tick" style="--tick: 8"></div>
+                    <div class="tick" style="--tick: 9"></div>
+                    <div class="tick" style="--tick: 10"></div>
+                    <div class="tick" style="--tick: 11"></div>
+                    <div class="tick" style="--tick: 12"></div>
+                    <div class="tick" style="--tick: 13"></div>
+                    <div class="tick" style="--tick: 14"></div>
+                    <div class="tick" style="--tick: 15"></div>
+                    <div class="tick" style="--tick: 16"></div>
+                    <div class="tick" style="--tick: 17"></div>
+                    <div class="tick" style="--tick: 18"></div>
+                    <div class="tick" style="--tick: 19"></div>
+                    <div class="tick" style="--tick: 20"></div>
+                    <div class="tick" style="--tick: 21"></div>
+                    <div class="tick" style="--tick: 22"></div>
+                    <div class="tick" style="--tick: 23"></div>
+                    <div class="tick" style="--tick: 24"></div>
+                    <div class="tick" style="--tick: 25"></div>
+                    <div class="tick" style="--tick: 26"></div>
+                    <div class="tick" style="--tick: 27"></div>
+                    <div class="tick" style="--tick: 28"></div>
+                    <div class="tick" style="--tick: 29"></div>
+                    <div class="tick" style="--tick: 30"></div>
+                    <div class="tick" style="--tick: 31"></div>
+                    <div class="tick" style="--tick: 32"></div>
+                    <div class="tick" style="--tick: 33"></div>
+                    <div class="tick" style="--tick: 34"></div>
+                    <div class="tick" style="--tick: 35"></div>
+                    <div class="tick" style="--tick: 36"></div>
+                    <div class="tick" style="--tick: 37"></div>
+                    <div class="tick" style="--tick: 38"></div>
+                    <div class="tick" style="--tick: 39"></div>
+                    <div class="tick" style="--tick: 40"></div>
+                    <div class="tick" style="--tick: 41"></div>
+                    <div class="tick" style="--tick: 42"></div>
+                    <div class="tick" style="--tick: 43"></div>
+                    <div class="tick" style="--tick: 44"></div>
+                    <div class="tick" style="--tick: 45"></div>
+                    <div class="tick" style="--tick: 46"></div>
+                    <div class="tick" style="--tick: 47"></div>
+                </div>
+
+                <!-- SOSTITUISCI la sezione loading-segments-ring con questa: -->
+                <div class="loading-segments-ring">
+                    <div class="loading-segment" style="--segment-angle: 0deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 12deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 24deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 36deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 48deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 60deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 72deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 84deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 96deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 108deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 120deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 132deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 144deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 156deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 168deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 180deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 192deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 204deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 216deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 228deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 240deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 252deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 264deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 276deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 288deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 300deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 312deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 324deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 336deg"></div>
+                    <div class="loading-segment" style="--segment-angle: 348deg"></div>
+                </div>
+
+            </div>
+
+            <!-- ANELLO MEDIO-INTERNO - Punti luminosi -->
+            <div class="ring ring-middle-inner">
+                <div class="data-dots">
+                    <!-- Punti come nell'immagine -->
+                    <div class="data-dot bright" style="--dot-angle: 0deg"></div>
+                    <div class="data-dot" style="--dot-angle: 20deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 40deg"></div>
+                    <div class="data-dot" style="--dot-angle: 60deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 80deg"></div>
+                    <div class="data-dot" style="--dot-angle: 100deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 120deg"></div>
+                    <div class="data-dot" style="--dot-angle: 140deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 160deg"></div>
+                    <div class="data-dot" style="--dot-angle: 180deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 200deg"></div>
+                    <div class="data-dot" style="--dot-angle: 220deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 240deg"></div>
+                    <div class="data-dot" style="--dot-angle: 260deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 280deg"></div>
+                    <div class="data-dot" style="--dot-angle: 300deg"></div>
+                    <div class="data-dot bright" style="--dot-angle: 320deg"></div>
+                    <div class="data-dot" style="--dot-angle: 340deg"></div>
+                </div>
+            </div>
+
+            <!-- ANELLO INTERNO - Cerchio solido con glow -->
+            <div class="ring ring-inner">
+                <div class="inner-glow"></div>
+            </div>
+
+            <!-- CENTRO JARVIS PERFETTAMENTE CENTRATO -->
+            <div class="jarvis-core-centered">
+                <!-- NOME PRINCIPALE -->
+                <div class="jarvis-name-perfect">
+                    <span class="letter">J</span>
+                    <span class="dot">.</span>
+                    <span class="letter">A</span>
+                    <span class="dot">.</span>
+                    <span class="letter">R</span>
+                    <span class="dot">.</span>
+                    <span class="letter">V</span>
+                    <span class="dot">.</span>
+                    <span class="letter">I</span>
+                    <span class="dot">.</span>
+                    <span class="letter">S</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTRO JARVIS -->
+        <div class="jarvis-core">
+            <!-- NOME PRINCIPALE -->
+            <div class="jarvis-name">
+                <span class="letter">J</span>
+                <span class="dot">.</span>
+                <span class="letter">A</span>
+                <span class="dot">.</span>
+                <span class="letter">R</span>
+                <span class="dot">.</span>
+                <span class="letter">V</span>
+                <span class="dot">.</span>
+                <span class="letter">I</span>
+                <span class="dot">.</span>
+                <span class="letter">S</span>
+            </div>
+
+            <!-- STATO SISTEMA -->
+            <div class="system-status">
+                <div class="status-text">ONLINE</div>
+                <div class="status-indicator"></div>
+            </div>
+        </div>
+
+
+
+        <!-- QUADRATINI PROGRESS MIGLIORATI (DAL MASTER PLAN) -->
+        <div class="progress-squares">
+            <div class="progress-square" id="cpu-progress" data-label="CPU"></div>
+            <div class="progress-square" id="memory-progress" data-label="MEM"></div>
+            <div class="progress-square" id="network-progress" data-label="NET"></div>
+            <div class="progress-square" id="ai-progress" data-label="AI"></div>
+        </div>
+
+        <!-- PANNELLI LATERALI INFO -->
+        <div class="side-panels">
+            <!-- PANNELLO SINISTRO - STATO SISTEMA -->
+            <div class="panel panel-left">
+                <div class="panel-header">SYSTEM STATUS</div>
+                <div class="panel-content">
+                    <div class="metric">
+                        <span class="metric-label">CPU</span>
+                        <span class="metric-value" id="cpu-usage">0%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">MEMORY</span>
+                        <span class="metric-value" id="memory-usage">0%</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">VOICE</span>
+                        <span class="metric-value" id="voice-status">READY</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">AI MODEL</span>
+                        <span class="metric-value" id="ai-model">MISTRAL-7B</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PANNELLO DESTRO - CONTROLLI RAPIDI -->
+            <div class="panel panel-right">
+                <div class="panel-header">QUICK CONTROLS</div>
+                <div class="panel-content">
+                    <button class="control-btn" id="voice-toggle">
+                        <span class="btn-icon">🎙️</span>
+                        <span class="btn-text">VOICE</span>
+                    </button>
+                    <button class="control-btn" id="chat-btn">
+                        <span class="btn-icon">💬</span>
+                        <span class="btn-text">CHAT</span>
+                    </button>
+                    <button class="control-btn" id="settings-btn">
+                        <span class="btn-icon">⚙️</span>
+                        <span class="btn-text">SETTINGS</span>
+                    </button>
+                    <button class="control-btn" id="minimize-btn">
+                        <span class="btn-icon">📦</span>
+                        <span class="btn-text">MINIMIZE</span>
+                    </button>
+                    <button class="control-btn" id="fullscreen-btn">
+                        <span class="btn-icon">🔲</span>
+                        <span class="btn-text">FULLSCREEN</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- INDICATORE VOICE ACTIVITY -->
+        <div class="voice-activity">
+            <div class="voice-wave">
+                <div class="wave-bar" style="--delay: 0s"></div>
+                <div class="wave-bar" style="--delay: 0.1s"></div>
+                <div class="wave-bar" style="--delay: 0.2s"></div>
+                <div class="wave-bar" style="--delay: 0.3s"></div>
+                <div class="wave-bar" style="--delay: 0.4s"></div>
+            </div>
+            <div class="voice-text">Listening...</div>
+        </div>
+
+        <!-- NOTIFICHE SISTEMA -->
+        <div class="notifications-container" id="notifications">
+            <!-- Le notifiche verranno aggiunte dinamicamente -->
+        </div>
+
+        <!-- STATO CONNESSIONE WEBSOCKET -->
+        <div class="connection-status">
+            <div class="connection-indicator" id="ws-status"></div>
+            <div class="connection-text">Backend: <span id="backend-status">Connecting...</span></div>
+        </div>
+    </div>
+
+    <!-- OVERLAY LOADING INIZIALE -->
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-ring"></div>
+            <div class="loading-text">Initializing J.A.R.V.I.S...</div>
+            <div class="loading-progress">
+                <div class="progress-bar" id="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT MODULES -->
+    <script src="js/app.js"></script>
+    <!-- ELECTRON MAIN PROCESS -->
+    <script>
+        // Collegamento con main.js per controlli Electron
+        if (typeof require !== 'undefined') {
+            const { ipcRenderer } = require('electron');
+
+            // Event listeners per i bottoni
+            document.addEventListener('DOMContentLoaded', () => {
+                const minimizeBtn = document.getElementById('minimize-btn');
+                const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+                if (minimizeBtn) {
+                    minimizeBtn.addEventListener('click', () => {
+                        ipcRenderer.invoke('minimize-window');
+                    });
+                }
+
+                if (fullscreenBtn) {
+                    fullscreenBtn.addEventListener('click', () => {
+                        ipcRenderer.invoke('toggle-fullscreen');
+                    });
+                }
+            });
+        }
+    </script>
+    <!-- CHAT PANEL -->
+    <div class="chat-panel" id="chat-panel"
+        style="position: fixed; top: 50%; right: -400px; transform: translateY(-50%); width: 350px; height: 450px; background: rgba(0, 20, 40, 0.95); border: 2px solid #00d4ff; border-radius: 15px; backdrop-filter: blur(20px); transition: right 0.5s ease; z-index: 1000; font-family: 'Rajdhani', sans-serif;">
+        <div
+            style="padding: 15px; border-bottom: 1px solid #00d4ff; display: flex; justify-content: space-between; align-items: center; font-weight: 600; color: #00d4ff;">
+            <div>💬 JARVIS CHAT</div>
+            <button id="chat-close"
+                style="background: none; border: none; color: #00d4ff; font-size: 20px; cursor: pointer;">×</button>
+        </div>
+        <div id="chat-messages" style="height: 300px; padding: 15px; overflow-y: auto;">
+            <div
+                style="margin-bottom: 15px; padding: 10px; border-radius: 8px; background: rgba(0, 212, 255, 0.1); border-left: 3px solid #00d4ff;">
+                <div style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">JARVIS</div>
+                <div style="line-height: 1.4; color: #ffffff;">Ciao! Puoi scrivermi qui se la voce non funziona.</div>
+            </div>
+        </div>
+        <div style="padding: 15px; border-top: 1px solid #00d4ff; display: flex; gap: 10px;">
+            <input type="text" id="chat-input" placeholder="Scrivi a JARVIS..."
+                style="flex: 1; background: rgba(0, 212, 255, 0.1); border: 1px solid #00d4ff; border-radius: 6px; padding: 8px 12px; color: white; font-family: 'Rajdhani', sans-serif;"
+                autocomplete="off">
+            <button id="chat-send"
+                style="background: #00d4ff; border: none; border-radius: 6px; padding: 8px 15px; color: white; cursor: pointer;">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // Chat functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatBtn = document.getElementById('chat-btn');
+            const chatPanel = document.getElementById('chat-panel');
+
+            chatBtn?.addEventListener('click', () => {
+                const isOpen = chatPanel.style.right === '20px';
+                chatPanel.style.right = isOpen ? '-400px' : '20px';
+            });
+
+            document.getElementById('chat-close')?.addEventListener('click', () => {
+                chatPanel.style.right = '-400px';
+            });
+        });
+    </script>
+
+</body>
+
+</html>

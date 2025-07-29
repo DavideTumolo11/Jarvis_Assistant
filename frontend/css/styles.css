@@ -1,0 +1,1040 @@
+/**
+ * JARVIS AI ASSISTANT - STILI FUTURISTICI IRON MAN PERFETTI
+ * 
+ * Questo file contiene tutti gli stili per l'interfaccia futuristica
+ * ispirata al Jarvis di Iron Man con anelli animati e effetti luminosi.
+ * 
+ * VERSIONE: PERFETTA E FUNZIONANTE
+ * 
+ * SEZIONI:
+ * 1. BASE & RESET
+ * 2. BACKGROUND & PARTICELLE
+ * 3. ANELLI CONCENTRICI ANIMATI
+ * 4. CENTRO JARVIS
+ * 5. RETTANGOLI DI CARICAMENTO
+ * 6. PANNELLI LATERALI
+ * 7. STATI COLORE
+ * 8. ANIMAZIONI
+ * 9. RESPONSIVE
+ */
+
+/* ================================
+   1. BASE & RESET
+================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+    font-family: 'Rajdhani', 'Orbitron', monospace;
+    background: #0a0e1a;
+    color: #00d4ff;
+    cursor: auto;
+}
+
+/* ================================
+   2. BACKGROUND & PARTICELLE
+================================ */
+
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #0f1419 0%, #060a12 50%, #020508 100%);
+    z-index: 1;
+}
+
+#particles-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+}
+
+/* Effetti luminosi ambientali */
+.glow-effects {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.ambient-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 800px;
+    height: 800px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+    animation: pulse-ambient 4s ease-in-out infinite;
+}
+
+.pulse-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 400px;
+    height: 400px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 50%);
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+/* ================================
+   3. INTERFACCIA PRINCIPALE
+================================ */
+
+.jarvis-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+}
+
+/* ================================
+   4. ANELLI CONCENTRICI ANIMATI
+================================ */
+
+.rings-system {
+    position: relative;
+    width: 600px;
+    height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ANELLO BASE */
+.ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 5px solid rgba(0, 212, 255, 0.3);
+    animation: rotate-clockwise 20s linear infinite;
+}
+
+/* ANELLO ESTERNO */
+.ring-outer {
+    width: 100%;
+    height: 100%;
+    border: 3px solid rgba(0, 213, 255, 0.925);
+    animation: rotate-clockwise 30s linear infinite;
+}
+
+.ring-segments {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.segment {
+    position: absolute;
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(to bottom, #00d4ff, rgba(0, 212, 255, 0.3));
+    border-radius: 2px;
+    top: 10px;
+    left: 50%;
+    transform-origin: 2px 290px;
+    transform: translateX(-50%) rotate(calc(var(--i) * 10deg));
+    opacity: 0.6;
+    animation: segment-pulse 3s ease-in-out infinite;
+    animation-delay: calc(var(--i) * 0.1s);
+}
+
+/* ANELLO MEDIO */
+.ring-middle {
+    width: 80%;
+    height: 80%;
+    border: 3px solid rgba(0, 213, 255, 0.925);
+    animation: rotate-counter-clockwise 25s linear infinite;
+}
+
+.ring-data-points {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.data-point {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: #00d4ff;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-200px);
+    box-shadow: 0 0 10px #00d4ff, 0 0 20px rgba(0, 212, 255, 0.5);
+    animation: data-point-pulse 2s ease-in-out infinite;
+}
+
+/* ANELLO INTERNO */
+.ring-inner {
+    width: 60%;
+    height: 60%;
+    border: 3px solid rgba(0, 213, 255, 0.925);
+    animation: rotate-clockwise 15s linear infinite;
+}
+
+.inner-segments {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.inner-segment {
+    position: absolute;
+    width: 30px;
+    height: 3px;
+    background: rgba(0, 212, 255, 0.4);
+    top: 50%;
+    left: 50%;
+    border-radius: 2px;
+    transform-origin: -120px 50%;
+    transform: translate(-50%, -50%) rotate(calc(var(--i, 0) * 45deg));
+}
+
+.inner-segment.active {
+    background: #00d4ff;
+    box-shadow: 0 0 5px #00d4ff;
+    animation: segment-active 1.5s ease-in-out infinite;
+}
+
+/* ================================
+   5. CENTRO JARVIS - CENTRAMENTO PERFETTO
+================================ */
+
+/* NASCONDI ELEMENTI DUPLICATI */
+.jarvis-core-centered,
+.jarvis-name-perfect {
+    display: none !important;
+}
+
+.jarvis-core {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+}
+
+.jarvis-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 50px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+    padding: 0;
+    text-shadow: 0 0 20px #00d4ff, 0 0 40px rgba(0, 212, 255, 0.5);
+    white-space: nowrap;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
+}
+
+.letter {
+    display: inline-block;
+    color: #00d4ff;
+    animation: letter-glow 3s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * 0.2s);
+    flex-shrink: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.dot {
+    display: inline-block;
+    color: rgba(0, 212, 255, 0.7);
+    font-size: 20px;
+    margin: 0 1px;
+    animation: dot-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+    padding: 0;
+}
+
+.system-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 30px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.status-indicator {
+    width: 15px;
+    height: 15px;
+    background: #00ff88;
+    border-radius: 50%;
+    box-shadow: 0 0 4px #00ff88;
+    animation: status-pulse 3s ease-in-out infinite;
+    flex-shrink: 0;
+    margin: 5px;
+    padding: 0;
+}
+
+/* ================================
+   6. RETTANGOLI DI CARICAMENTO
+================================ */
+
+/* CONTAINER CERCHIO INTERNO */
+.loading-segments-ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* RETTANGOLI CERCHIO INTERNO */
+.loading-segment {
+    position: absolute;
+    width: 18px;
+    height: 4px;
+    background: rgba(0, 212, 255, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(var(--segment-angle)) translateY(-205px);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* CONTAINER CERCHIO ESTERNO */
+.loading-segments-outer {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    animation: rotate-counter-clockwise 35s linear infinite;
+}
+
+/* RETTANGOLI CERCHIO ESTERNO */
+.loading-segment-outer {
+    position: absolute;
+    width: 18px;
+    height: 4px;
+    background: rgba(0, 212, 255, 0.3);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(var(--segment-angle)) translateY(-265px);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+/* STATI ATTIVI CERCHIO INTERNO */
+.loading-segment.loading {
+    background: #00d4ff;
+    box-shadow: 0 0 8px #00d4ff, 0 0 16px rgba(0, 212, 255, 0.7);
+    animation: segment-loading-pulse 1s ease-in-out infinite;
+}
+
+.loading-segment.completed {
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88;
+}
+
+.loading-segment.error {
+    background: #ff4444;
+    box-shadow: 0 0 8px #ff4444;
+}
+
+.loading-segment.processing {
+    background: #ffaa00;
+    box-shadow: 0 0 8px #ffaa00;
+    animation: segment-processing-glow 0.8s ease-in-out infinite;
+}
+
+/* STATI ATTIVI CERCHIO ESTERNO - SENZA ALLUNGAMENTO */
+.loading-segment-outer.loading {
+    background: #00d4ff;
+    box-shadow: 0 0 8px #00d4ff, 0 0 16px rgba(0, 212, 255, 0.7);
+    animation: segment-loading-pulse 1s ease-in-out infinite;
+}
+
+.loading-segment-outer.completed {
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88;
+}
+
+.loading-segment-outer.error {
+    background: #ff4444;
+    box-shadow: 0 0 8px #ff4444;
+}
+
+.loading-segment-outer.processing {
+    background: #ffaa00;
+    box-shadow: 0 0 8px #ffaa00;
+    animation: segment-processing-glow 0.8s ease-in-out infinite;
+}
+
+/* ================================
+   7. QUADRATINI PROGRESS
+================================ */
+
+.progress-squares {
+    position: absolute;
+    bottom: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+    z-index: 15;
+}
+
+.progress-square {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    background: rgba(0, 212, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-square::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0%;
+    background: linear-gradient(to top, #00d4ff, rgba(0, 212, 255, 0.6));
+    transition: height 0.5s ease;
+}
+
+.progress-square.active::before {
+    height: 100%;
+}
+
+/* ================================
+   8. PANNELLI LATERALI
+================================ */
+
+.side-panels {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 12;
+}
+
+.panel {
+    position: absolute;
+    width: 300px;
+    background: rgba(0, 20, 40, 0.8);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 20px;
+    font-family: 'Rajdhani', sans-serif;
+    pointer-events: auto;
+}
+
+.panel-left {
+    top: 50px;
+    left: 50px;
+}
+
+.panel-right {
+    top: 50px;
+    right: 50px;
+}
+
+.panel-header {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    color: #00d4ff;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+    padding-bottom: 8px;
+}
+
+.metric {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.metric-label {
+    color: rgba(0, 212, 255, 0.7);
+}
+
+.metric-value {
+    color: #00ff88;
+    font-weight: 600;
+}
+
+/* BOTTONI CONTROLLO */
+.control-btn {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    cursor: pointer;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.control-btn:hover {
+    background: rgba(0, 212, 255, 0.2);
+    border-color: #00d4ff;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+.control-btn:active {
+    transform: scale(0.95);
+}
+
+/* ================================
+   9. VOICE ACTIVITY
+================================ */
+
+.voice-activity {
+    position: absolute;
+    bottom: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 15;
+}
+
+.voice-wave {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    margin-bottom: 10px;
+}
+
+.wave-bar {
+    width: 4px;
+    height: 20px;
+    background: #00d4ff;
+    border-radius: 2px;
+    animation: wave-animation 1.5s ease-in-out infinite;
+    animation-delay: var(--delay);
+}
+
+.voice-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    color: rgba(0, 212, 255, 0.8);
+    letter-spacing: 1px;
+}
+
+/* ================================
+   10. NOTIFICHE & CONNECTION
+================================ */
+
+.notifications-container {
+    position: absolute;
+    top: 50px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    z-index: 25;
+}
+
+.connection-status {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    color: rgba(0, 212, 255, 0.7);
+    z-index: 15;
+}
+
+.connection-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ff4444;
+    transition: all 0.3s ease;
+}
+
+.connection-indicator.connected {
+    background: #00ff88;
+    box-shadow: 0 0 8px #00ff88;
+    animation: connection-pulse 2s ease-in-out infinite;
+}
+
+/* ================================
+   11. LOADING OVERLAY
+================================ */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(10, 14, 26, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease;
+}
+
+.loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.loading-content {
+    text-align: center;
+}
+
+.loading-ring {
+    width: 80px;
+    height: 80px;
+    border: 3px solid rgba(0, 212, 255, 0.3);
+    border-top: 3px solid #00d4ff;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    animation: loading-spin 1s linear infinite;
+}
+
+.loading-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.2rem;
+    color: #00d4ff;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.loading-progress {
+    width: 200px;
+    height: 4px;
+    background: rgba(0, 212, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #00d4ff, #0099cc);
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+}
+
+/* ================================
+   12. STATI COLORE (DAL MASTER PLAN)
+================================ */
+
+/* STATO BLU - NORMALE (DEFAULT) */
+body.state-normal {
+    --primary-color: #00d4ff;
+    --glow-color: rgba(0, 212, 255, 0.5);
+}
+
+/* STATO VERDE - SUSSURRO */
+body.state-whisper {
+    --primary-color: #00ff88;
+    --glow-color: rgba(0, 255, 136, 0.5);
+}
+
+body.state-whisper .jarvis-name,
+body.state-whisper .ring {
+    color: #00ff88;
+    border-color: rgba(0, 255, 136, 0.4);
+}
+
+/* STATO GIALLO - MUTO */
+body.state-muted {
+    --primary-color: #ffaa00;
+    --glow-color: rgba(255, 170, 0, 0.5);
+}
+
+body.state-muted .jarvis-name,
+body.state-muted .ring {
+    color: #ffaa00;
+    border-color: rgba(255, 170, 0, 0.4);
+}
+
+/* STATO ROSSO - DORMIENTE */
+body.state-sleeping {
+    --primary-color: #ff4444;
+    --glow-color: rgba(255, 68, 68, 0.5);
+}
+
+body.state-sleeping .jarvis-name,
+body.state-sleeping .ring {
+    color: #ff4444;
+    border-color: rgba(255, 68, 68, 0.4);
+}
+
+/* STATO VIOLA - ELABORANDO */
+body.state-processing {
+    --primary-color: #aa44ff;
+    --glow-color: rgba(170, 68, 255, 0.5);
+}
+
+body.state-processing .jarvis-name,
+body.state-processing .ring {
+    color: #aa44ff;
+    border-color: rgba(170, 68, 255, 0.4);
+}
+
+/* STATO BIANCO - PARLANDO */
+body.state-speaking {
+    --primary-color: #ffffff;
+    --glow-color: rgba(255, 255, 255, 0.5);
+}
+
+body.state-speaking .jarvis-name,
+body.state-speaking .ring {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ================================
+   13. ANIMAZIONI PERFETTE
+================================ */
+
+@keyframes rotate-clockwise {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate-counter-clockwise {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes pulse-ambient {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.1;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.1);
+        opacity: 0.2;
+    }
+}
+
+@keyframes pulse-glow {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0.1;
+    }
+}
+
+@keyframes segment-pulse {
+
+    0%,
+    100% {
+        opacity: 0.3;
+        height: 15px;
+    }
+
+    50% {
+        opacity: 1;
+        height: 25px;
+    }
+}
+
+@keyframes data-point-pulse {
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-200px) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-200px) scale(1.5);
+    }
+}
+
+@keyframes segment-active {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 15px #00d4ff;
+    }
+}
+
+@keyframes letter-glow {
+
+    0%,
+    100% {
+        text-shadow: 0 0 20px #00d4ff, 0 0 40px rgba(0, 212, 255, 0.5);
+    }
+
+    50% {
+        text-shadow: 0 0 30px #00d4ff, 0 0 60px rgba(0, 212, 255, 0.8);
+    }
+}
+
+@keyframes dot-pulse {
+
+    0%,
+    100% {
+        opacity: 0.7;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+@keyframes status-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 10px #00ff88;
+    }
+
+    50% {
+        box-shadow: 0 0 20px #00ff88, 0 0 30px rgba(0, 255, 136, 0.5);
+    }
+}
+
+@keyframes wave-animation {
+
+    0%,
+    100% {
+        height: 20px;
+        opacity: 0.6;
+    }
+
+    50% {
+        height: 40px;
+        opacity: 1;
+    }
+}
+
+@keyframes connection-pulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 8px #00ff88;
+    }
+
+    50% {
+        box-shadow: 0 0 16px #00ff88, 0 0 24px rgba(0, 255, 136, 0.5);
+    }
+}
+
+@keyframes loading-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ANIMAZIONI RETTANGOLI - SENZA SCALING */
+@keyframes segment-loading-pulse {
+
+    0%,
+    100% {
+        opacity: 0.8;
+        box-shadow: 0 0 8px #00d4ff;
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 12px #00d4ff, 0 0 24px rgba(0, 212, 255, 0.8);
+    }
+}
+
+@keyframes segment-processing-glow {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        box-shadow: 0 0 8px #ffaa00;
+    }
+
+    50% {
+        opacity: 1;
+        box-shadow: 0 0 16px #ffaa00, 0 0 32px rgba(255, 170, 0, 0.6);
+    }
+}
+
+/* ================================
+   14. RESPONSIVE & PERFORMANCE
+================================ */
+
+@media (max-width: 1400px) {
+    .rings-system {
+        width: 550px;
+        height: 550px;
+    }
+
+    .panel {
+        width: 280px;
+    }
+}
+
+@media (max-width: 1200px) {
+    .rings-system {
+        width: 500px;
+        height: 500px;
+    }
+
+    .panel {
+        width: 250px;
+    }
+}
+
+@media (max-width: 900px) {
+    .rings-system {
+        width: 450px;
+        height: 450px;
+    }
+
+    .panel {
+        width: 220px;
+        padding: 15px;
+    }
+
+    .panel-left {
+        top: 30px;
+        left: 30px;
+    }
+
+    .panel-right {
+        top: 30px;
+        right: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .rings-system {
+        width: 400px;
+        height: 400px;
+    }
+
+    .panel {
+        width: 200px;
+        padding: 12px;
+    }
+
+    .progress-squares {
+        gap: 10px;
+        transform: translateX(-50%) scale(0.9);
+    }
+}
+
+@media (max-width: 600px) {
+    .rings-system {
+        width: 350px;
+        height: 350px;
+    }
+
+    .side-panels {
+        transform: scale(0.8);
+    }
+
+    .progress-squares {
+        transform: translateX(-50%) scale(0.8);
+    }
+}
+
+@media (max-width: 480px) {
+    .rings-system {
+        width: 300px;
+        height: 300px;
+    }
+
+    .side-panels {
+        display: none;
+    }
+}
+
+/* Performance optimization */
+* {
+    will-change: auto;
+}
+
+.ring,
+.segment,
+.data-point {
+    will-change: transform;
+}
+
+.jarvis-name,
+.status-indicator {
+    will-change: opacity, text-shadow, box-shadow;
+}
+
+/* Hardware acceleration */
+.rings-system,
+.jarvis-core,
+.background-container {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+}

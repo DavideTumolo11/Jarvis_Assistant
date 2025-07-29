@@ -1,0 +1,19 @@
+﻿# Voice Processing - STACK CONFERMATO
+openai-whisper==20231117    # STT locale (Whisper)
+piper-tts==1.3.0           # TTS neurale locale (Piper) ✅ NUOVO
+pyaudio==0.2.11            # Audio I/O
+speechrecognition==3.10.0  # Speech recognition wrapper
+
+# LLM & AI - TESTATO
+ollama==0.1.7              # LLM inference server
+requests==2.31.0           # HTTP client per Ollama
+
+# Communication - FUNZIONANTE
+websockets==12.0           # Real-time WebSocket
+fastapi==0.104.1           # API framework (futuro)
+uvicorn==0.24.0            # ASGI server
+
+# Database & Storage - SEMPLIFICATO
+chromadb==0.4.18           # Vector database (opzionale)
+sqlalchemy==2.0.23         # ORM per SQLite
+psutil==5.9.6              # System metrics

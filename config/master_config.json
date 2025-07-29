@@ -1,0 +1,58 @@
+﻿{
+  "system": {
+    "name": "JARVIS",
+    "version": "1.0.0",
+    "debug": false,
+    "log_level": "INFO"
+  },
+  "voice": {
+    "stt_engine": "whisper",
+    "stt_model": "base",
+    "stt_language": "it",
+    "tts_engine": "piper",
+    "tts_model": "it_IT-riccardo-x_low",
+    "wake_words": ["jarvis", "ehi jarvis", "hey jarvis"],
+    "always_listening": true,
+    "voice_activity_detection": true,
+    "max_stt_latency": 3.0,
+    "max_tts_latency": 2.0,
+    "wake_sensitivity": 0.8
+  },
+  "llm": {
+    "ollama_host": "localhost:11434",
+    "primary_model": "mistral:7b",
+    "fallback_model": "qwen2.5:14b",
+    "max_tokens": 2048,
+    "temperature": 0.7,
+    "context_window": 4096,
+    "timeout": 30
+  },
+  "memory": {
+    "primary_db": "sqlite",
+    "semantic_db": "chromadb",
+    "cache_engine": "memory",
+    "backup_strategy": "local_automated",
+    "max_conversation_history": 100,
+    "semantic_search_enabled": true
+  },
+  "websocket": {
+    "host": "localhost",
+    "port": 8765,
+    "max_connections": 20,
+    "message_timeout": 45,
+    "heartbeat_interval": 30
+  },
+  "performance": {
+    "max_cpu_usage": 80,
+    "max_memory_usage": 6144,
+    "response_timeout": 10,
+    "startup_timeout": 30
+  },
+  "privacy": {
+    "local_processing": true,
+    "cloud_apis": false,
+    "data_retention": "memory",
+    "audio_storage": false,
+    "conversation_encryption": false
+  }
+}
