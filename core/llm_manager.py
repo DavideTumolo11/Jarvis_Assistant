@@ -457,7 +457,7 @@ Ricorda: sei l'assistente AI più avanzato del mondo, ma sempre al servizio dell
                     "repeat_penalty": self.config.repeat_penalty,
                     "num_predict": self.config.max_tokens
                 },
-                "stream": self.config.stream_response
+                "stream": True
             }
             
             # Richiesta a Ollama - TIMEOUT AUMENTATO A 60s

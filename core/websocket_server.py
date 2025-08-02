@@ -41,7 +41,7 @@ class LLMConfig:
     """Configurazione LLM Manager"""
     ollama_host: str = "localhost:11434"
     ollama_timeout: int = 60
-    primary_model: str = "llama3.2:1b"
+    primary_model: str = "mistral:7b"
     fallback_model: str = "qwen2.5:14b"
     max_tokens: int = 2048
     temperature: float = 0.7
