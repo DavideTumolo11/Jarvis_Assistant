@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="css/styles.css">
 
     <!-- PRELOAD ASSETS PER PERFORMANCE -->
-    <link rel="preload" href="assets/icon.png" as="image">
+    <!--<link rel="preload" href="assets/icon.png" as="image">-->
 </head>
 
 <body>
@@ -442,23 +442,6 @@
                 style="background: #00d4ff; border: none; border-radius: 6px; padding: 8px 15px; color: white; cursor: pointer;">➤</button>
         </div>
     </div>
-
-    <script>
-        // Chat functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            const chatBtn = document.getElementById('chat-btn');
-            const chatPanel = document.getElementById('chat-panel');
-
-            chatBtn?.addEventListener('click', () => {
-                const isOpen = chatPanel.style.right === '20px';
-                chatPanel.style.right = isOpen ? '-400px' : '20px';
-            });
-
-            document.getElementById('chat-close')?.addEventListener('click', () => {
-                chatPanel.style.right = '-400px';
-            });
-        });
-    </script>
 
 </body>
 
