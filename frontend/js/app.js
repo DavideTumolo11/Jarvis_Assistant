@@ -1,35 +1,29 @@
 /**
- * JARVIS AI ASSISTANT - FRONTEND APPLICATION LOGIC DEFINITIVO
+ * JARVIS AI ASSISTANT - FRONTEND APPLICATION LOGIC CON STREAMING
  * 
- * Questo file contiene tutta la logica del frontend:
- * - WebSocket connessione real-time al Core System
- * - Gestione stati visivi (colori blu/verde/giallo/rosso)
- * - Voice activity detection e visualizzazione
- * - Control buttons e interazioni utente
- * - Real-time system metrics updates
- * - Particelle canvas animate
- * - Notifiche dinamiche
- * - CHAT COMPLETAMENTE FUNZIONANTE CON BACKEND
+ * Versione aggiornata con supporto completo per streaming chunks:
+ * - Gestione ai_response_chunk in real-time
+ * - Effetto typing progressivo come ADA
+ * - Accumulo chunks durante streaming
+ * - Visual feedback per streaming attivo
  * 
- * CONNESSIONE: Frontend ↔ WebSocket ↔ Core System ↔ Voice Manager
- * 
- * VERSIONE: 1.0 FINALE - TESTATO E FUNZIONANTE - CORRETTO PER ECHO
+ * NUOVO: Streaming real-time invece di attesa 19s
  */
 
 class JarvisApp {
     constructor() {
         // CONFIGURAZIONE
         this.config = {
-            websocketUrl: 'ws://localhost:8765', // WebSocket server del Core System
-            reconnectInterval: 3000,             // Reconnect ogni 3 secondi
-            particleCount: 300,                  // Numero particelle background (aumentato)
-            updateInterval: 1000                 // Update metriche ogni secondo
+            websocketUrl: 'ws://localhost:8765',
+            reconnectInterval: 3000,
+            particleCount: 300,
+            updateInterval: 1000
         };
 
         // STATO APPLICAZIONE
         this.state = {
             connected: false,
-            currentState: 'normal',              // normal|whisper|muted|sleeping|processing|speaking
+            currentState: 'normal',
             voiceActive: false,
             systemMetrics: {
                 cpu: 0,
@@ -38,6 +32,15 @@ class JarvisApp {
                 aiModel: 'MISTRAL-7B'
             },
             notifications: []
+        };
+
+        // STREAMING STATE - NUOVO
+        this.streamingState = {
+            isStreaming: false,
+            currentMessage: "",
+            currentMessageElement: null,
+            chunksReceived: 0,
+            streamStartTime: null
         };
 
         // ELEMENTI DOM
@@ -55,9 +58,8 @@ class JarvisApp {
      * INIZIALIZZAZIONE PRINCIPALE
      */
     async init() {
-        console.log('🚀 Initializing Jarvis Frontend...');
+        console.log('🚀 Initializing Jarvis Frontend with STREAMING support...');
 
-        // Aspetta che DOM sia caricato
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setup());
         } else {
@@ -88,8 +90,8 @@ class JarvisApp {
             // 6. Nascondi loading overlay
             this.hideLoadingOverlay();
 
-            console.log('✅ Jarvis Frontend initialized successfully');
-            this.showNotification('J.A.R.V.I.S Interface Online', 'success');
+            console.log('✅ Jarvis Frontend with STREAMING initialized successfully');
+            this.showNotification('J.A.R.V.I.S Interface Online - STREAMING Mode', 'success');
 
         } catch (error) {
             console.error('❌ Error initializing Jarvis Frontend:', error);
@@ -142,11 +144,11 @@ class JarvisApp {
             waveBars: document.querySelectorAll('.wave-bar')
         };
 
-        console.log('📋 DOM elements initialized');
+        console.log('📋 DOM elements initialized with streaming support');
     }
 
     /**
-     * SETUP PARTICELLE CANVAS - MIGLIORATO
+     * SETUP PARTICELLE CANVAS
      */
     setupParticles() {
         this.particlesCanvas = document.getElementById('particles-canvas');
@@ -156,15 +158,9 @@ class JarvisApp {
         }
 
         this.particlesCtx = this.particlesCanvas.getContext('2d');
-
-        // Resize canvas to full screen
         this.resizeCanvas();
         window.addEventListener('resize', () => this.resizeCanvas());
-
-        // Crea particelle
         this.createParticles();
-
-        // Avvia animazione particelle
         this.animateParticles();
 
         console.log('✨ Particles system initialized');
@@ -181,12 +177,11 @@ class JarvisApp {
     }
 
     /**
-     * CREA PARTICELLE PIÙ DENSE E VARIEGATE
+     * CREA PARTICELLE
      */
     createParticles() {
         this.particles = [];
 
-        // NUMERO OTTIMIZZATO DI PARTICELLE
         for (let i = 0; i < this.config.particleCount; i++) {
             this.particles.push({
                 x: Math.random() * this.particlesCanvas.width,
@@ -202,20 +197,17 @@ class JarvisApp {
     }
 
     /**
-     * ANIMAZIONE PARTICELLE OTTIMIZZATA
+     * ANIMAZIONE PARTICELLE
      */
     animateParticles() {
         if (!this.particlesCtx || !this.particlesCanvas) return;
 
         this.particlesCtx.clearRect(0, 0, this.particlesCanvas.width, this.particlesCanvas.height);
 
-        // Update e disegna ogni particella
         this.particles.forEach((particle, index) => {
-            // Update posizione
             particle.x += particle.vx;
             particle.y += particle.vy;
 
-            // Bounce sui bordi
             if (particle.x < 0 || particle.x > this.particlesCanvas.width) {
                 particle.vx *= -1;
             }
@@ -223,22 +215,18 @@ class JarvisApp {
                 particle.vy *= -1;
             }
 
-            // Mantieni in bounds
             particle.x = Math.max(0, Math.min(this.particlesCanvas.width, particle.x));
             particle.y = Math.max(0, Math.min(this.particlesCanvas.height, particle.y));
 
-            // Update pulse
             particle.pulsePhase += 0.02;
             const pulse = Math.sin(particle.pulsePhase) * 0.3 + 0.7;
 
-            // Disegna particella
             this.particlesCtx.beginPath();
             this.particlesCtx.arc(particle.x, particle.y, particle.size * pulse, 0, Math.PI * 2);
             this.particlesCtx.fillStyle = `rgba(0, 212, 255, ${particle.opacity * pulse})`;
             this.particlesCtx.fill();
 
-            // Connessioni tra particelle vicine (ottimizzato per performance)
-            if (index % 5 === 0) { // Solo ogni 5a particella per performance
+            if (index % 5 === 0) {
                 this.particles.slice(index + 1, index + 21).forEach(other => {
                     const dx = particle.x - other.x;
                     const dy = particle.y - other.y;
@@ -269,35 +257,30 @@ class JarvisApp {
         this.elements.minimizeBtn?.addEventListener('click', () => this.minimizeWindow());
         this.elements.fullscreenBtn?.addEventListener('click', () => this.toggleFullscreen());
 
-        // ✅ CHAT FUNCTIONALITY
+        // Chat functionality
         this.setupChatEventListeners();
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => this.handleKeyboard(e));
 
-        // Mouse cursor tracking (per effetto futuristico)
+        // Mouse cursor tracking
         document.addEventListener('mousemove', (e) => this.updateCursor(e));
 
         console.log('🎛️ Event listeners setup complete');
     }
 
     /**
-     * ✅ SETUP CHAT EVENT LISTENERS - COMPLETAMENTE TESTATO
+     * SETUP CHAT EVENT LISTENERS
      */
     setupChatEventListeners() {
-        console.log('💬 Setting up chat event listeners...');
+        console.log('💬 Setting up chat event listeners with STREAMING support...');
 
-        // Verifica che gli elementi esistano
-        if (!this.elements.chatBtn) {
-            console.error('❌ Chat button not found!');
-            return;
-        }
-        if (!this.elements.chatPanel) {
-            console.error('❌ Chat panel not found!');
+        if (!this.elements.chatBtn || !this.elements.chatPanel) {
+            console.error('❌ Chat elements not found!');
             return;
         }
 
-        // Apri/chiudi chat panel con logging dettagliato
+        // Apri/chiudi chat panel
         this.elements.chatBtn.addEventListener('click', (e) => {
             e.preventDefault();
             e.stopPropagation();
@@ -320,7 +303,7 @@ class JarvisApp {
             });
         }
 
-        // Funzione invio messaggio ottimizzata
+        // Funzione invio messaggio
         const sendMessage = () => {
             if (!this.elements.chatInput) {
                 console.error('❌ Chat input not found!');
@@ -334,7 +317,7 @@ class JarvisApp {
                 // Aggiungi messaggio utente alla chat
                 this.addChatMessage('USER', message);
 
-                // Invia al backend con logging
+                // Invia al backend
                 this.sendWebSocketMessage('text_command', { text: message });
 
                 // Reset input
@@ -366,60 +349,11 @@ class JarvisApp {
             });
         }
 
-        console.log('✅ Chat event listeners setup complete');
+        console.log('✅ Chat event listeners setup complete with streaming');
     }
 
     /**
-     * ✅ AGGIUNGI MESSAGGIO ALLA CHAT - STYLING MIGLIORATO
-     */
-    addChatMessage(sender, text, type = 'normal') {
-        if (!this.elements.chatMessages) return;
-
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `chat-message ${sender.toLowerCase()}-message`;
-
-        // Styling differenziato per utente e AI
-        const isUser = sender === 'USER';
-        const backgroundColor = isUser ? 'rgba(0, 212, 255, 0.1)' : 'rgba(0, 255, 127, 0.1)';
-        const borderColor = isUser ? '#00d4ff' : '#00ff7f';
-        const textColor = '#ffffff';
-
-        messageDiv.style.cssText = `
-            margin-bottom: 15px; 
-            padding: 12px 15px; 
-            border-radius: 12px; 
-            background: ${backgroundColor}; 
-            border-left: 3px solid ${borderColor};
-            animation: fadeInUp 0.3s ease-out;
-        `;
-
-        // Timestamp
-        const timestamp = new Date().toLocaleTimeString('it-IT', {
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-
-        messageDiv.innerHTML = `
-            <div style="font-weight: bold; font-size: 11px; margin-bottom: 5px; color: ${borderColor}; text-transform: uppercase;">
-                ${sender} - ${timestamp}
-            </div>
-            <div style="line-height: 1.5; color: ${textColor}; word-wrap: break-word;">
-                ${text}
-            </div>
-        `;
-
-        this.elements.chatMessages.appendChild(messageDiv);
-
-        // Smooth scroll to bottom
-        setTimeout(() => {
-            this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
-        }, 100);
-
-        console.log(`💬 Added ${sender} message: ${text.substring(0, 50)}...`);
-    }
-
-    /**
-     * CONNESSIONE WEBSOCKET CON RETRY LOGIC
+     * CONNESSIONE WEBSOCKET
      */
     async connectWebSocket() {
         try {
@@ -431,7 +365,7 @@ class JarvisApp {
                 console.log('✅ WebSocket connected');
                 this.state.connected = true;
                 this.updateConnectionStatus(true);
-                this.showNotification('Connected to Jarvis Core', 'success');
+                this.showNotification('Connected to Jarvis Core - STREAMING Active', 'success');
             };
 
             this.websocket.onmessage = (event) => {
@@ -443,10 +377,8 @@ class JarvisApp {
                 this.state.connected = false;
                 this.updateConnectionStatus(false);
 
-                // ✅ SOLO RICONNETTI SE NON È UNA DISCONNESSIONE NORMALE
                 if (event.code !== 1000 && event.code !== 1001) {
                     this.showNotification('Connection lost. Reconnecting...', 'warning');
-                    // Auto-reconnect con backoff SOLO per errori
                     setTimeout(() => this.connectWebSocket(), this.config.reconnectInterval);
                 } else {
                     console.log('💫 Normal WebSocket close, not reconnecting automatically');
@@ -461,14 +393,12 @@ class JarvisApp {
         } catch (error) {
             console.error('❌ Failed to connect WebSocket:', error);
             this.showNotification('Failed to connect to backend', 'error');
-
-            // Retry connection
             setTimeout(() => this.connectWebSocket(), this.config.reconnectInterval);
         }
     }
 
     /**
-     * ✅ GESTIONE MESSAGGI WEBSOCKET COMPLETA E CORRETTA
+     * GESTIONE MESSAGGI WEBSOCKET - CON STREAMING SUPPORT
      */
     handleWebSocketMessage(data) {
         console.log('📨 RAW MESSAGE RECEIVED:', data);
@@ -476,25 +406,24 @@ class JarvisApp {
         try {
             const message = typeof data === 'string' ? JSON.parse(data) : data;
             console.log('📋 PARSED MESSAGE:', message);
-            console.log('📨 Received message:', message);
 
             switch (message.type) {
-                // ✅ GESTIONE ECHO RESPONSE - NUOVO
+                // ✅ NUOVO - GESTIONE STREAMING CHUNKS
+                case 'ai_response_chunk':
+                    console.log('🔥 STREAMING CHUNK RECEIVED:', message);
+                    this.handleStreamingChunk(message);
+                    break;
+
+                // Gestione echo response
                 case 'echo_response':
                     console.log('🔄 ECHO RICEVUTO:', message);
-                    console.log('   📤 Messaggio originale:', message.original_message);
-                    console.log('   📥 Echo processato:', message.processed_at);
-                    console.log('   🔍 Debug info:', message.debug_info);
-
-                    // Se era echo di text_command, mostra che è stato ricevuto
                     if (message.original_message?.type === 'text_command') {
                         const originalText = message.original_message?.text || 'messaggio vuoto';
-                        this.addChatMessage('JARVIS', `Echo ricevuto: "${originalText}"`);
                         console.log('💬 Echo di text_command processato correttamente');
                     }
                     break;
 
-                // ✅ GESTIONE CONNECTION ESTABLISHED - NUOVO
+                // Gestione connessione stabilita
                 case 'connection_established':
                     console.log('🔗 CONNESSIONE STABILITA:', message.message);
                     this.addChatMessage('SYSTEM', `Connesso: ${message.message}`);
@@ -512,15 +441,12 @@ class JarvisApp {
                     this.updateSystemMetrics(message.data);
                     break;
 
-                // ✅ GESTIONE RISPOSTA AI TESTUALE
+                // ✅ RISPOSTA AI FINALE - STREAMING COMPLETATO
                 case 'text_command_response':
-                    console.log('🔥 GOT TEXT RESPONSE!', message);
-                    if (message.text) {
-                        this.addChatMessage('JARVIS', message.text);
-                    }
+                    console.log('🏁 FINAL RESPONSE RECEIVED:', message);
+                    this.handleFinalResponse(message);
                     break;
 
-                // ✅ GESTIONE RISPOSTA AI DIRETTA
                 case 'ai_response':
                     if (message.data && message.data.text) {
                         this.addChatMessage('JARVIS', message.data.text);
@@ -559,7 +485,6 @@ class JarvisApp {
 
                 default:
                     console.log('❓ Unknown message type:', message.type, message);
-                    // Non mostrare più errore per messaggi sconosciuti
                     break;
             }
         } catch (error) {
@@ -568,7 +493,227 @@ class JarvisApp {
     }
 
     /**
-     * INVIA MESSAGGIO WEBSOCKET CON VALIDAZIONE
+     * ✅ NUOVO - GESTIONE STREAMING CHUNKS
+     */
+    handleStreamingChunk(message) {
+        try {
+            const chunk = message.chunk || '';
+            const chunkNumber = message.chunk_number || 0;
+            const isFinal = message.is_final || false;
+
+            console.log(`📦 Processing chunk #${chunkNumber}: "${chunk}" (final: ${isFinal})`);
+
+            // Se è il primo chunk, inizia nuovo messaggio streaming
+            if (chunkNumber === 1 || !this.streamingState.isStreaming) {
+                this.startStreamingMessage();
+            }
+
+            // Accumula chunk nel messaggio corrente
+            if (chunk) {
+                this.streamingState.currentMessage += chunk;
+                this.streamingState.chunksReceived++;
+
+                // Aggiorna il messaggio nel DOM in real-time
+                this.updateStreamingMessage(this.streamingState.currentMessage);
+            }
+
+            // Se è il chunk finale, completa il streaming
+            if (isFinal) {
+                this.completeStreamingMessage();
+            }
+
+        } catch (error) {
+            console.error('❌ Error handling streaming chunk:', error);
+        }
+    }
+
+    /**
+     * ✅ NUOVO - INIZIA MESSAGGIO STREAMING
+     */
+    startStreamingMessage() {
+        console.log('🚀 Starting streaming message...');
+
+        this.streamingState.isStreaming = true;
+        this.streamingState.currentMessage = "";
+        this.streamingState.chunksReceived = 0;
+        this.streamingState.streamStartTime = Date.now();
+
+        // Crea elemento messaggio per streaming
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'chat-message jarvis-message streaming';
+
+        const backgroundColor = 'rgba(0, 255, 127, 0.1)';
+        const borderColor = '#00ff7f';
+
+        messageDiv.style.cssText = `
+            margin-bottom: 15px; 
+            padding: 12px 15px; 
+            border-radius: 12px; 
+            background: ${backgroundColor}; 
+            border-left: 3px solid ${borderColor};
+            animation: fadeInUp 0.3s ease-out;
+        `;
+
+        const timestamp = new Date().toLocaleTimeString('it-IT', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        messageDiv.innerHTML = `
+            <div style="font-weight: bold; font-size: 11px; margin-bottom: 5px; color: ${borderColor}; text-transform: uppercase;">
+                JARVIS - ${timestamp} - STREAMING...
+            </div>
+            <div class="streaming-content" style="line-height: 1.5; color: #ffffff; word-wrap: break-word;">
+                <span class="typing-cursor">|</span>
+            </div>
+        `;
+
+        this.elements.chatMessages.appendChild(messageDiv);
+        this.streamingState.currentMessageElement = messageDiv;
+
+        // Scroll to bottom
+        this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+    }
+
+    /**
+     * ✅ FIXED - AGGIORNA MESSAGGIO STREAMING
+     */
+    updateStreamingMessage(text) {
+        if (!this.streamingState.currentMessageElement) {
+            console.warn('⚠️ No streaming message element found');
+            return;
+        }
+
+        const contentDiv = this.streamingState.currentMessageElement.querySelector('.streaming-content');
+        if (contentDiv) {
+            // METODO DIRETTO - Force update DOM
+            contentDiv.innerHTML = '';
+            const textNode = document.createTextNode(text);
+            const cursorSpan = document.createElement('span');
+            cursorSpan.className = 'typing-cursor';
+            cursorSpan.textContent = '|';
+            cursorSpan.style.cssText = 'animation: blink 1s infinite; color: #00d4ff;';
+
+            contentDiv.appendChild(textNode);
+            contentDiv.appendChild(cursorSpan);
+
+            console.log(`📝 Updated streaming text: "${text.substring(0, 20)}..." (${text.length} chars)`);
+
+            // Force scroll to bottom
+            setTimeout(() => {
+                this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+            }, 0);
+        } else {
+            console.error('❌ Streaming content div not found');
+        }
+    }
+
+    /**
+     * ✅ FIXED - COMPLETA MESSAGGIO STREAMING
+     */
+    completeStreamingMessage() {
+        console.log('🏁 Completing streaming message...');
+
+        if (this.streamingState.currentMessageElement) {
+            // Rimuovi cursor e mostra testo finale
+            const contentDiv = this.streamingState.currentMessageElement.querySelector('.streaming-content');
+            if (contentDiv) {
+                // FORCE CLEAN UPDATE
+                contentDiv.innerHTML = '';
+                const finalTextNode = document.createTextNode(this.streamingState.currentMessage);
+                contentDiv.appendChild(finalTextNode);
+
+                console.log(`✅ Final text set: "${this.streamingState.currentMessage.substring(0, 50)}..."`);
+            }
+
+            // Aggiorna header con statistiche
+            const headerDiv = this.streamingState.currentMessageElement.querySelector('div');
+            if (headerDiv) {
+                const streamDuration = ((Date.now() - this.streamingState.streamStartTime) / 1000).toFixed(1);
+                const currentText = headerDiv.innerHTML;
+                const newText = currentText.replace('STREAMING...', `COMPLETED (${streamDuration}s, ${this.streamingState.chunksReceived} chunks)`);
+                headerDiv.innerHTML = newText;
+            }
+
+            // Rimuovi classe streaming
+            this.streamingState.currentMessageElement.classList.remove('streaming');
+        }
+
+        // Reset streaming state
+        this.streamingState.isStreaming = false;
+        this.streamingState.currentMessage = "";
+        this.streamingState.currentMessageElement = null;
+        this.streamingState.chunksReceived = 0;
+
+        console.log('✅ Streaming message completed and cleaned up');
+    }
+
+    /**
+     * ✅ GESTIONE RISPOSTA FINALE
+     */
+    handleFinalResponse(message) {
+        console.log('🏁 Handling final response:', message);
+
+        // Se non è in streaming, aggiungi messaggio normale
+        if (!this.streamingState.isStreaming) {
+            this.addChatMessage('JARVIS', message.text);
+        }
+        // Se è in streaming, il messaggio è già stato gestito dai chunks
+    }
+
+    /**
+     * AGGIUNGI MESSAGGIO ALLA CHAT
+     */
+    addChatMessage(sender, text, type = 'normal') {
+        if (!this.elements.chatMessages) return;
+
+        // Se è in streaming, non aggiungere messaggi duplicati
+        if (this.streamingState.isStreaming && sender === 'JARVIS') {
+            return;
+        }
+
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `chat-message ${sender.toLowerCase()}-message`;
+
+        const isUser = sender === 'USER';
+        const backgroundColor = isUser ? 'rgba(0, 212, 255, 0.1)' : 'rgba(0, 255, 127, 0.1)';
+        const borderColor = isUser ? '#00d4ff' : '#00ff7f';
+        const textColor = '#ffffff';
+
+        messageDiv.style.cssText = `
+            margin-bottom: 15px; 
+            padding: 12px 15px; 
+            border-radius: 12px; 
+            background: ${backgroundColor}; 
+            border-left: 3px solid ${borderColor};
+            animation: fadeInUp 0.3s ease-out;
+        `;
+
+        const timestamp = new Date().toLocaleTimeString('it-IT', {
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        messageDiv.innerHTML = `
+            <div style="font-weight: bold; font-size: 11px; margin-bottom: 5px; color: ${borderColor}; text-transform: uppercase;">
+                ${sender} - ${timestamp}
+            </div>
+            <div style="line-height: 1.5; color: ${textColor}; word-wrap: break-word;">
+                ${text}
+            </div>
+        `;
+
+        this.elements.chatMessages.appendChild(messageDiv);
+
+        setTimeout(() => {
+            this.elements.chatMessages.scrollTop = this.elements.chatMessages.scrollHeight;
+        }, 100);
+
+        console.log(`💬 Added ${sender} message: ${text.substring(0, 50)}...`);
+    }
+
+    /**
+     * INVIA MESSAGGIO WEBSOCKET
      */
     sendWebSocketMessage(type, data = {}) {
         if (this.websocket && this.websocket.readyState === WebSocket.OPEN) {
@@ -583,23 +728,18 @@ class JarvisApp {
     }
 
     /**
-     * GESTIONE STATI COLORE MIGLIORATA
+     * GESTIONE STATI COLORE
      */
     setState(newState) {
         if (this.state.currentState !== newState) {
             console.log(`🎨 State change: ${this.state.currentState} → ${newState}`);
 
-            // Rimuovi stato precedente
             document.body.classList.remove(`state-${this.state.currentState}`);
-
-            // Aggiungi nuovo stato
             this.state.currentState = newState;
             document.body.classList.add(`state-${newState}`);
 
-            // Update visual indicators
             this.updateStateIndicators(newState);
 
-            // Notifica visiva
             const stateNames = {
                 normal: 'Normal Mode',
                 whisper: 'Whisper Mode',
@@ -617,7 +757,6 @@ class JarvisApp {
      * UPDATE STATE INDICATORS
      */
     updateStateIndicators(state) {
-        // Update any state-specific UI elements
         const stateIndicator = document.querySelector('.state-indicator');
         if (stateIndicator) {
             stateIndicator.textContent = state.toUpperCase();
@@ -639,7 +778,6 @@ class JarvisApp {
             }
         }
 
-        // Anima wave bars
         if (this.elements.waveBars) {
             this.elements.waveBars.forEach((bar, index) => {
                 if (active) {
@@ -653,14 +791,13 @@ class JarvisApp {
     }
 
     /**
-     * UPDATE SYSTEM METRICS - OTTIMIZZATO
+     * UPDATE SYSTEM METRICS
      */
     updateSystemMetrics(metrics) {
         if (!metrics) return;
 
         this.state.systemMetrics = { ...this.state.systemMetrics, ...metrics };
 
-        // Update text values con null check
         if (this.elements.cpuUsage && metrics.cpu_percent !== undefined) {
             this.elements.cpuUsage.textContent = `${Math.round(metrics.cpu_percent)}%`;
         }
@@ -674,7 +811,6 @@ class JarvisApp {
             this.elements.aiModel.textContent = metrics.ai_model;
         }
 
-        // Update progress squares con animazioni
         this.updateProgressSquare(this.elements.cpuProgress, metrics.cpu_percent || 0);
         this.updateProgressSquare(this.elements.memoryProgress, metrics.memory_percent || 0);
         this.updateProgressSquare(this.elements.networkProgress, metrics.disk_usage_percent || 0);
@@ -682,22 +818,19 @@ class JarvisApp {
     }
 
     /**
-     * UPDATE PROGRESS SQUARE CON ANIMAZIONI
+     * UPDATE PROGRESS SQUARE
      */
     updateProgressSquare(element, percentage) {
         if (!element) return;
 
-        // Clamp percentage
         percentage = Math.max(0, Math.min(100, percentage));
 
-        // Update active state
         if (percentage > 70) {
             element.classList.add('active');
         } else {
             element.classList.remove('active');
         }
 
-        // Smooth animation del fill
         element.style.transition = 'all 0.5s ease';
         element.style.setProperty('--fill-height', `${percentage}%`);
     }
@@ -717,11 +850,10 @@ class JarvisApp {
         }
 
         if (this.elements.backendStatus) {
-            this.elements.backendStatus.textContent = connected ? 'Connected' : 'Disconnected';
+            this.elements.backendStatus.textContent = connected ? 'Connected - STREAMING' : 'Disconnected';
             this.elements.backendStatus.style.color = connected ? '#00ff7f' : '#ff4757';
         }
 
-        // Update global connection indicator
         document.body.classList.toggle('websocket-connected', connected);
     }
 
@@ -737,7 +869,6 @@ class JarvisApp {
     openSettings() {
         this.showNotification('Settings panel coming soon...', 'info');
         console.log('⚙️ Settings panel requested');
-        // TODO: Implementare pannello settings
     }
 
     minimizeWindow() {
@@ -758,10 +889,9 @@ class JarvisApp {
     }
 
     /**
-     * KEYBOARD SHORTCUTS ESTESI
+     * KEYBOARD SHORTCUTS
      */
     handleKeyboard(event) {
-        // Non intercettare quando si sta scrivendo nella chat
         if (event.target === this.elements.chatInput) {
             return;
         }
@@ -779,7 +909,6 @@ class JarvisApp {
 
             case 'F3':
                 event.preventDefault();
-                // Toggle chat panel
                 if (this.elements.chatBtn) {
                     this.elements.chatBtn.click();
                 }
@@ -789,14 +918,12 @@ class JarvisApp {
                 if (document.fullscreenElement) {
                     document.exitFullscreen();
                 }
-                // Chiudi chat se aperta
                 if (this.elements.chatPanel && this.elements.chatPanel.style.right === '20px') {
                     this.elements.chatPanel.style.right = '-400px';
                 }
                 break;
 
             case 'Enter':
-                // Se chat non è aperta e non stiamo scrivendo, apri chat
                 if (this.elements.chatPanel && this.elements.chatPanel.style.right !== '20px') {
                     this.elements.chatBtn?.click();
                     setTimeout(() => {
@@ -808,10 +935,9 @@ class JarvisApp {
     }
 
     /**
-     * CURSOR TRACKING OTTIMIZZATO
+     * CURSOR TRACKING
      */
     updateCursor(event) {
-        // Throttle cursor updates per performance
         if (!this.lastCursorUpdate || Date.now() - this.lastCursorUpdate > 16) {
             document.documentElement.style.setProperty('--cursor-x', event.clientX + 'px');
             document.documentElement.style.setProperty('--cursor-y', event.clientY + 'px');
@@ -820,7 +946,7 @@ class JarvisApp {
     }
 
     /**
-     * SISTEMA NOTIFICHE MIGLIORATO
+     * SISTEMA NOTIFICHE
      */
     showNotification(text, level = 'info', duration = 5000) {
         if (!this.elements.notifications) return;
@@ -828,7 +954,6 @@ class JarvisApp {
         const notification = document.createElement('div');
         notification.className = `notification notification-${level}`;
 
-        // Icon per tipo
         const icons = {
             info: 'ℹ️',
             success: '✅',
@@ -844,7 +969,6 @@ class JarvisApp {
             </div>
         `;
 
-        // Add to container con animazione
         notification.style.cssText = `
             transform: translateX(100%);
             transition: transform 0.3s ease-out;
@@ -852,12 +976,10 @@ class JarvisApp {
 
         this.elements.notifications.appendChild(notification);
 
-        // Trigger animation
         setTimeout(() => {
             notification.style.transform = 'translateX(0)';
         }, 10);
 
-        // Auto remove
         const removeNotification = () => {
             notification.style.transform = 'translateX(100%)';
             setTimeout(() => {
@@ -867,10 +989,8 @@ class JarvisApp {
             }, 300);
         };
 
-        // Auto remove timer
         const autoRemoveTimer = setTimeout(removeNotification, duration);
 
-        // Close button
         notification.querySelector('.notification-close').addEventListener('click', () => {
             clearTimeout(autoRemoveTimer);
             removeNotification();
@@ -880,7 +1000,7 @@ class JarvisApp {
     }
 
     /**
-     * LOADING OVERLAY CON PROGRESS DETTAGLIATO
+     * LOADING OVERLAY
      */
     hideLoadingOverlay() {
         const stages = [
@@ -888,6 +1008,7 @@ class JarvisApp {
             'Connecting to Backend...',
             'Loading AI Models...',
             'Activating Voice Systems...',
+            'Enabling STREAMING Mode...',
             'Finalizing Interface...'
         ];
 
@@ -895,18 +1016,16 @@ class JarvisApp {
         let currentStage = 0;
 
         const progressInterval = setInterval(() => {
-            progress += Math.random() * 15 + 5; // 5-20% incrementi
+            progress += Math.random() * 15 + 5;
 
             if (progress >= 100) {
                 progress = 100;
             }
 
-            // Update progress bar
             if (this.elements.loadingProgress) {
                 this.elements.loadingProgress.style.width = `${progress}%`;
             }
 
-            // Update stage text
             const newStage = Math.floor((progress / 100) * stages.length);
             if (newStage !== currentStage && newStage < stages.length) {
                 currentStage = newStage;
@@ -916,11 +1035,9 @@ class JarvisApp {
                 }
             }
 
-            // Complete loading
             if (progress >= 100) {
                 clearInterval(progressInterval);
 
-                // Hide overlay with fade effect
                 setTimeout(() => {
                     if (this.elements.loadingOverlay) {
                         this.elements.loadingOverlay.style.opacity = '0';
@@ -936,18 +1053,14 @@ class JarvisApp {
     }
 
     /**
-     * START UPDATE LOOPS - OTTIMIZZATO CON ECHO STOP
+     * START UPDATE LOOPS
      */
     startUpdateLoops() {
-        // ✅ DISABILITA REQUEST_METRICS AUTOMATICO IN MODALITÀ ECHO
-        // Metrics update loop - SOLO se non in echo mode
+        // Metrics update loop disabilitato per modalità streaming
         const metricsLoop = setInterval(() => {
             if (this.state.connected) {
-                // NON inviare request_metrics in modalità echo
-                // this.sendWebSocketMessage('request_metrics');
-                console.log('🔇 Metrics request disabilitato in modalità echo debug');
+                console.log('🔇 Metrics request disabilitato in modalità streaming');
             } else {
-                // Fake metrics per demo quando disconnesso
                 this.updateSystemMetrics({
                     cpu_percent: Math.floor(Math.random() * 30) + 10,
                     memory_percent: Math.floor(Math.random() * 40) + 20,
@@ -959,60 +1072,46 @@ class JarvisApp {
             }
         }, this.config.updateInterval);
 
-        // Heartbeat loop (ping server) - RIDOTTO
+        // Heartbeat loop ridotto
         const heartbeatLoop = setInterval(() => {
             if (this.state.connected) {
-                // this.sendWebSocketMessage('ping'); // Disabilitato per modalità echo
-                console.log('🔇 Ping disabilitato in modalità echo debug');
+                console.log('🔇 Ping disabilitato in modalità streaming');
             }
-        }, 30000); // Ogni 30 secondi
+        }, 30000);
 
-        // Voice activity simulation (quando disconnesso)
+        // Voice activity simulation
         const voiceSimLoop = setInterval(() => {
             if (!this.state.connected && Math.random() > 0.95) {
-                // Simula occasionale voice activity per demo
                 this.updateVoiceActivity(true);
                 setTimeout(() => this.updateVoiceActivity(false), 2000);
             }
         }, 5000);
 
-        console.log('🔄 Update loops started (echo mode - requests disabilitati)');
-
-        // Store intervals per cleanup
+        console.log('🔄 Update loops started (streaming mode)');
         this.updateIntervals = [metricsLoop, heartbeatLoop, voiceSimLoop];
     }
 
     /**
-     * ✅ HANDLE JARVIS RESPONSE - ENHANCED
+     * HANDLE JARVIS RESPONSE
      */
     handleJarvisResponse(message) {
         console.log('🤖 Handling Jarvis response:', message);
 
-        // Set speaking state temporaneamente
         this.setState('speaking');
-
-        // Voice response animation
         this.updateVoiceActivity(true);
 
-        // Estimated speaking duration (based on text length)
         const estimatedDuration = Math.max(2000, (message.text?.length || 0) * 50);
 
-        // Return to normal after response
         setTimeout(() => {
             this.setState('normal');
             this.updateVoiceActivity(false);
         }, message.duration || estimatedDuration);
 
-        // Show processing notification
         this.showNotification('Response generated', 'success', 2000);
     }
 
     /**
      * UTILITY METHODS
-     */
-
-    /**
-     * Get current system state
      */
     getSystemState() {
         return {
@@ -1020,13 +1119,12 @@ class JarvisApp {
             currentState: this.state.currentState,
             voiceActive: this.state.voiceActive,
             metrics: this.state.systemMetrics,
-            websocketReady: this.websocket?.readyState === WebSocket.OPEN
+            websocketReady: this.websocket?.readyState === WebSocket.OPEN,
+            streamingSupport: true,
+            streamingState: this.streamingState
         };
     }
 
-    /**
-     * Force reconnect WebSocket
-     */
     forceReconnect() {
         console.log('🔄 Forcing WebSocket reconnection...');
 
@@ -1041,9 +1139,6 @@ class JarvisApp {
         this.showNotification('Reconnecting to backend...', 'info');
     }
 
-    /**
-     * Clear chat messages
-     */
     clearChat() {
         if (this.elements.chatMessages) {
             this.elements.chatMessages.innerHTML = '';
@@ -1052,15 +1147,11 @@ class JarvisApp {
         }
     }
 
-    /**
-     * Enable debug mode
-     */
     enableDebugMode() {
         console.log('🐛 Debug mode enabled');
         document.body.classList.add('debug-mode');
         this.debugMode = true;
 
-        // Add debug info overlay
         const debugOverlay = document.createElement('div');
         debugOverlay.id = 'debug-overlay';
         debugOverlay.style.cssText = `
@@ -1078,18 +1169,17 @@ class JarvisApp {
         `;
         document.body.appendChild(debugOverlay);
 
-        // Update debug info regularly
         setInterval(() => {
             if (debugOverlay) {
                 const state = this.getSystemState();
                 debugOverlay.innerHTML = `
-                    <div><strong>JARVIS DEBUG</strong></div>
+                    <div><strong>JARVIS DEBUG - STREAMING</strong></div>
                     <div>Connected: ${state.connected ? '✅' : '❌'}</div>
                     <div>State: ${state.currentState}</div>
                     <div>Voice: ${state.voiceActive ? '🎤' : '🔇'}</div>
                     <div>WS: ${state.websocketReady ? 'OPEN' : 'CLOSED'}</div>
-                    <div>CPU: ${state.metrics.cpu}%</div>
-                    <div>RAM: ${state.metrics.memory}%</div>
+                    <div>Streaming: ${state.streamingState.isStreaming ? '🔥' : '💤'}</div>
+                    <div>Chunks: ${state.streamingState.chunksReceived}</div>
                     <div>Particles: ${this.particles.length}</div>
                 `;
             }
@@ -1102,22 +1192,18 @@ class JarvisApp {
     destroy() {
         console.log('🗑️ Destroying Jarvis App...');
 
-        // Close WebSocket
         if (this.websocket) {
             this.websocket.close();
         }
 
-        // Clear intervals
         if (this.updateIntervals) {
             this.updateIntervals.forEach(interval => clearInterval(interval));
         }
 
-        // Remove event listeners
         window.removeEventListener('resize', this.resizeCanvas);
         document.removeEventListener('keydown', this.handleKeyboard);
         document.removeEventListener('mousemove', this.updateCursor);
 
-        // Clear particles
         this.particles = [];
 
         console.log('✅ Jarvis App destroyed');
@@ -1144,16 +1230,31 @@ window.addEventListener('unhandledrejection', (event) => {
 /**
  * INIZIALIZZAZIONE APP
  */
-console.log('🤖 Loading Jarvis Frontend Application v1.0...');
+/* CSS per typing cursor animation */
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes blink {
+        0%, 50% { opacity: 1; }
+        51%, 100% { opacity: 0; }
+    }
+    .typing-cursor {
+        animation: blink 1s infinite;
+        color: #00d4ff;
+        font-weight: bold;
+    }
+    .streaming-content {
+        min-height: 20px;
+    }
+`;
+document.head.appendChild(style);
 
-// Wait for DOM and initialize
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('📄 DOM loaded, initializing Jarvis...');
+    console.log('📄 DOM loaded, initializing Jarvis with STREAMING support...');
 
     // Create global instance
     window.jarvis = new JarvisApp();
 
-    // Debug helpers (global functions)
+    // Debug helpers con streaming support
     window.jarvisDebug = {
         getState: () => window.jarvis.getSystemState(),
         reconnect: () => window.jarvis.forceReconnect(),
@@ -1162,11 +1263,15 @@ document.addEventListener('DOMContentLoaded', () => {
         sendTest: (msg) => window.jarvis.sendWebSocketMessage('text_command', { text: msg }),
         sendEcho: (msg) => window.jarvis.sendWebSocketMessage('test_echo', { text: msg }),
         particles: () => window.jarvis.particles.length,
-        toggleVoice: () => window.jarvis.toggleVoice()
+        toggleVoice: () => window.jarvis.toggleVoice(),
+        streamingState: () => window.jarvis.streamingState,
+        startStreaming: () => window.jarvis.startStreamingMessage(),
+        completeStreaming: () => window.jarvis.completeStreamingMessage()
     };
 
     console.log('🎮 Debug helpers available: window.jarvisDebug');
-    console.log('✅ Jarvis Frontend Application loaded successfully');
+    console.log('🚀 Streaming support: ENABLED');
+    console.log('✅ Jarvis Frontend Application with STREAMING loaded successfully');
 });
 
 /**
